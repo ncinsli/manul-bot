@@ -16,6 +16,7 @@ def set_last(last):
 
 @bot.message_handler(commands=['init'])
 def init(message):
+    if (message.from_user.id == message.chat.id): return
     if len(message.text.split()) == 1: 
         bot.send_message(message.chat.id, '❌  Введите последнего подсчитанного манула!\nПример: /init 20030')
         return 
@@ -23,9 +24,9 @@ def init(message):
     bot.send_message(message.chat.id, '🐱  Подсчёт манулов активирован!')
     set_last(int(message.text.split()[1]))
 
-
 @bot.message_handler(commands=['stat'])
 def stat(message):
+    if (message.from_user.id == message.chat.id): return
     timeout = -1
     if len(message.text.split()) > 1:
         timeout = int(message.text.split()[1])
@@ -45,6 +46,8 @@ def help(message):
 
 @bot.message_handler()
 def on_message(message):
+    if (message.from_user.id == message.chat.id): return
+
     raw = message.text
     number = re.sub("[^0-9]", "", raw)
     if number == '': return
