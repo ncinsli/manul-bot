@@ -47,8 +47,9 @@ def help(message):
 @bot.message_handler()
 def on_message(message):
     if (message.from_user.id == message.chat.id): return
-
     raw = message.text
+    if 'манул' not in raw: return
+    
     number = re.sub("[^0-9]", "", raw)
     if number == '': return
 
