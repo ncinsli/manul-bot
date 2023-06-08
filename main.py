@@ -26,7 +26,22 @@ def init(message):
 
 @bot.message_handler(commands=['stat'])
 def stat(message):
-    bot.reply_to(message, '⚙  Статистика\n\nМанулов сейчас: ' + str(get_last()))
+    timeout = -1
+    if len(message.text.split()) > 1:
+        timeout = int(message.text.split()[1])
+
+    msg = bot.reply_to(message, '⚙  Статистика\n\nМанулов сейчас: ' + str(get_last()) + '\n' + (f'Это сообщение удалится через {timeout} секунд' if timeout > -1 else ''))
+
+    if timeout > -1:
+        time.sleep(timeout)
+        bot.delete_message(message.chat.id, msg.id)
+
+@bot.message_handler(commands=['/help', '/?'])
+def help(message):
+    bot.send_message(message.chat.id, """❓  Помощь
+/init <число> – Сброс счетчика манулов 
+/stat – Какой манул сейчас по счёту?
+""")
 
 @bot.message_handler()
 def on_message(message):
@@ -39,6 +54,6 @@ def on_message(message):
     if number - get_last() == 1:
         set_last(number)
     else: 
-        bot.reply_to(message, '❌  Порядок манулов нарушен <pre>' + str(get_last() + 1) + '</pre>')
+        bot.reply_to(message, '❌  Порядок манулов нарушен\n\n<pre>' + str(get_last() + 1) + '</pre>')
 
 bot.infinity_polling()
